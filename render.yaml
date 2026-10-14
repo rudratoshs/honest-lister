@@ -7,10 +7,12 @@ services:
   - type: web
     name: honest-lister
     runtime: python
-    plan: starter
+    plan: free               # free tier; spins down when idle, cold start ~30-60s
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
       - key: HONEST_LISTER_VLM
         value: mock          # switch to hf_space once the Space is verified awake
       - key: HONEST_LISTER_SPACE
