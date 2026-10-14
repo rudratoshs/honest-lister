@@ -15,6 +15,9 @@ So I built the opposite tool. It's called **Honest Lister**, and its whole job i
 
 > **Most AI listing tools optimize what they can _generate_. Honest Lister optimizes what a seller can safely _claim_.**
 
+> 🔴 **Try the live demo:** **[honest-lister.onrender.com](https://honest-lister.onrender.com)** · **Code:** [github.com/rudratoshs/honest-lister](https://github.com/rudratoshs/honest-lister)
+> *(Free tier — if it's been idle it may take ~30s to wake, then click the "prove it or leave it out" example.)*
+
 ---
 
 ## What I built
@@ -50,7 +53,9 @@ Then the publishability gate — which doesn't just flag the gaps, it tells you 
 
 A normal AI tool, handed the same photo, will cheerfully write "Navy cotton jacket, size M" — and two of those three words are guesses.
 
-**Run it yourself (no model download needed):**
+**Try the hosted demo:** **[honest-lister.onrender.com](https://honest-lister.onrender.com)** (give it ~30s to wake if it's been idle).
+
+**Or run it yourself (no model download needed):**
 
 ```bash
 git clone https://github.com/rudratoshs/honest-lister && cd honest-lister
@@ -207,8 +212,9 @@ My hypothesis — the one I want to be proven wrong on — is that the abstentio
 
 ## Try it / the code
 
+- **Live demo:** https://honest-lister.onrender.com *(free tier, ~30s cold start)*
 - **Repo:** https://github.com/rudratoshs/honest-lister (MIT)
-- **Run the demo:** `uvicorn app.main:app --reload` → http://127.0.0.1:8000
+- **Run locally:** `uvicorn app.main:app --reload` → http://127.0.0.1:8000
 - **Run the benchmark:** `python -m lister.benchmark`
 
 If the idea that AI should make selling **more truthful**, not just faster, resonates with you — or if you think the evidence-ledger approach breaks somewhere — tell me. I'd rather hear where it fails than where it flatters.
