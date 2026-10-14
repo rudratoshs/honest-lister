@@ -34,14 +34,19 @@ And — the part I care about most — **it ships with a benchmark that measures
 
 ## Demo
 
-![Honest Lister running the "jacket, no label" example](https://raw.githubusercontent.com/rudratoshs/devto-assets/main/honest-lister/demo.png)
+The scenario I'm proudest of is **"prove it or leave it out."** Upload a jacket with no visible brand or size label and watch what happens.
 
-The demo scenario I'm proudest of is **"prove it or leave it out."** Upload a jacket with no visible brand or size label and watch what happens:
+First, the listing it writes — and the price it *refuses* to guess:
+
+![The generated listing with only verifiable attributes, and a price that abstains because there aren't enough comparable sales](https://raw.githubusercontent.com/rudratoshs/devto-assets/main/honest-lister/ui-listing.png)
 
 - Category, colour, condition come back **observed** — they're in the photo.
 - Brand, size, material come back **unverified** — the photo doesn't establish them, so they're kept *out* of the listing.
-- The publishability gate asks for exactly the photos that would resolve them: *"add a close-up showing the brand (e.g. the label/tag)."*
 - The price **abstains** — only 3 comparable sales, not enough to be confident.
+
+Then the publishability gate — which doesn't just flag the gaps, it tells you the exact photo that would close each one:
+
+![The publishability gate marks the listing reviewable, lists the unverified attributes to confirm, and requests the specific close-up photos that would resolve them](https://raw.githubusercontent.com/rudratoshs/devto-assets/main/honest-lister/ui-gate.png)
 
 A normal AI tool, handed the same photo, will cheerfully write "Navy cotton jacket, size M" — and two of those three words are guesses.
 
@@ -94,6 +99,10 @@ else:
     claim.status = Status.UNVERIFIED
 ```
 
+Here's the ledger on the jacket — each attribute carrying its status, confidence, and the exact visual evidence (or the reason it couldn't be established):
+
+![The evidence ledger: category, colour and condition are observed (teal); brand, size and material are unverified (amber), each with the reason it was held back](https://raw.githubusercontent.com/rudratoshs/devto-assets/main/honest-lister/ui-ledger.png)
+
 The listing copy is then assembled **only from observed and inferred claims**. An unverified brand physically cannot reach the title. A contradiction (you typed "Mango," the photo clearly shows a Zara tag) blocks the publish and tells you why.
 
 ### It really runs on an open-weight model
@@ -126,6 +135,8 @@ It takes the **same vision-model output** and runs it through two systems: a nor
   human corrections / listing   (lower)       1.14           0.0
   ------------------------------------------------------------------
 ```
+
+![The Honesty Benchmark running in the app: baseline vs Honest Lister across the four metrics, with the better cell highlighted in each row](https://raw.githubusercontent.com/rudratoshs/devto-assets/main/honest-lister/ui-benchmark.png)
 
 Read it carefully, because the interesting number is **0.96, not 1.0**.
 
