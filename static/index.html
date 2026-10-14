@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Honest Lister — the evidence-backed listing copilot</title>
+<style>
+  :root{
+    --ink:#0f172a; --sub:#64748b; --line:#e2e8f0; --bg:#f8fafc; --card:#fff;
+    --blue:#2563eb; --amber:#d97706; --teal:#0d9488; --red:#dc2626; --green:#16a34a;
+    --observed:#0d9488; --inferred:#2563eb; --unverified:#d97706; --contradicted:#dc2626;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5}
+  .wrap{max-width:960px;margin:0 auto;padding:32px 16px 80px}
+  header h1{font-size:1.9rem;margin:0 0 4px}
+  header p{color:var(--sub);margin:0 0 6px;font-size:1.05rem}
+  .tagline{font-style:italic;color:var(--ink);background:#eef2ff;border-left:3px solid var(--blue);
+    padding:10px 14px;border-radius:0 8px 8px 0;margin:16px 0 24px}
+  .pipeline{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px}
+  .pipeline span{background:#fff;border:1px solid var(--line);border-radius:10px;
+    padding:6px 12px;font-size:.85rem;color:var(--sub)}
+  .pipeline b{color:var(--ink)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:0 0 18px}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col{flex:1;min-width:280px}
+  button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--blue);
+    background:var(--blue);color:#fff;padding:9px 16px;font-weight:600}
+  button.ghost{background:#fff;color:var(--blue)}
+  button.amber{background:var(--amber);border-color:var(--amber)}
+  label{font-size:.85rem;color:var(--sub);display:block;margin:10px 0 4px}
+  input[type=text],input[type=file]{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font:inherit}
+  h2{font-size:1.1rem;margin:0 0 12px}
+  .muted{color:var(--sub);font-size:.9rem}
+  /* ledger */
+  .claim{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .claim:last-child{border-bottom:0}
+  .pill{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+    padding:3px 8px;border-radius:6px;color:#fff;white-space:nowrap;margin-top:2px}
+  .observed{background:var(--observed)} .inferred{background:var(--inferred)}
+  .unverified{background:var(--unverified)} .contradicted{background:var(--contradicted)}
+  .claim .body b{text-transform:capitalize}
+  .claim .reason{color:var(--sub);font-size:.82rem}
+  .gate{border-radius:12px;padding:14px;margin-top:4px}
+  .gate.ok{background:#ecfdf5;border:1px solid #a7f3d0}
+  .gate.block{background:#fef2f2;border:1px solid #fecaca}
+  .gate h3{margin:0 0 8px;font-size:1rem}
+  .gate ul{margin:6px 0;padding-left:20px}
+  .blocker{color:var(--red)} .warn{color:var(--amber)} .ask{color:var(--blue)}
+  .price .range{font-size:1.6rem;font-weight:800}
+  .price .abstain{color:var(--amber);font-weight:600}
+  .score{font-size:2rem;font-weight:800}
+  table{border-collapse:collapse;width:100%;font-size:.9rem}
+  th,td{text-align:right;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  td.better{color:var(--green);font-weight:700}
+  .listing-box{background:#f1f5f9;border-radius:10px;padding:14px;margin-top:8px}
+  .listing-box .title{font-weight:700}
+  .tags span{display:inline-block;background:#e2e8f0;border-radius:6px;padding:2px 8px;margin:3px 3px 0 0;font-size:.8rem}
+  @media (prefers-color-scheme: dark){
+    :root{--ink:#e5e7eb;--sub:#94a3b8;--line:#334155;--bg:#0b1220;--card:#111827}
+    .tagline{background:#1e293b} .pipeline span,.listing-box{background:#0b1220}
+    .tags span{background:#1e293b}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Honest Lister</h1>
+    <p>The evidence-backed listing copilot for resellers. Every claim is supported, every uncertainty is visible.</p>
+    <div class="tagline">“Most AI listing tools optimize what they can <b>generate</b>. Honest Lister optimizes what a seller can safely <b>claim</b>.”</div>
+    <div class="pipeline">
+      <span><b>Observe</b> what the photo shows</span>
+      <span><b>Verify</b> which claims hold</span>
+      <span><b>Price</b> from real comps</span>
+      <span><b>Publish</b> only what's safe</span>
+    </div>
+  </header>
+
+  <div class="card">
+    <h2>Try it</h2>
+    <div class="row">
+      <div class="col">
+        <label>Upload an item photo (second-hand clothing)</label>
+        <input type="file" id="file" accept="image/*">
+        <label>Or run a built-in example</label>
+        <button class="amber" onclick="demo('jacket_no_label')">👀 The “prove it or leave it out” demo (jacket, no label)</button>
+        <button class="ghost" style="margin-top:8px" onclick="demo('sneakers')">Sneakers, no clear brand</button>
+      </div>
+      <div class="col">
+        <label>Seller-confirmed facts (optional — these become trusted)</label>
+        <input type="text" id="brand" placeholder="Brand (if you know it)">
+        <input type="text" id="size" placeholder="Size" style="margin-top:8px">
+        <input type="text" id="material" placeholder="Material" style="margin-top:8px">
+        <button style="margin-top:12px;width:100%" onclick="submitUpload()">Generate honest listing</button>
+      </div>
+    </div>
+    <p class="muted" id="status" style="margin-top:12px"></p>
+  </div>
+
+  <div id="results" style="display:none">
+    <div class="row">
+      <div class="col card">
+        <h2>Listing <span class="muted" id="honesty"></span></h2>
+        <div class="listing-box">
+          <div class="title" id="r-title"></div>
+          <div id="r-desc" style="margin-top:6px"></div>
+          <div class="tags" id="r-tags"></div>
+        </div>
+      </div>
+      <div class="col card price">
+        <h2>Suggested price</h2>
+        <div id="r-price"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Evidence ledger</h2>
+      <p class="muted">Each attribute, its status, and why. Only <b>observed</b> and <b>inferred</b> claims enter the listing.</p>
+      <div id="r-claims"></div>
+    </div>
+
+    <div class="card">
+      <h2>Publishability gate</h2>
+      <div id="r-gate"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Honesty Benchmark <span class="muted">— measured, not claimed</span></h2>
+    <p class="muted">Same vision-model output through a normal generator vs Honest Lister.</p>
+    <button class="ghost" onclick="loadBench()">Run benchmark</button>
+    <div id="bench" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<script>
+const PILL = {observed:"observed",inferred:"inferred",unverified:"unverified",contradicted:"contradicted"};
+function esc(s){return (s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+async function demo(scenario){
+  setStatus("Running example…");
+  const r = await fetch("/api/demo?scenario="+encodeURIComponent(scenario));
+  render(await r.json());
+}
+async function submitUpload(){
+  const f=document.getElementById("file").files[0];
+  const fd=new FormData();
+  if(f) fd.append("image",f); else fd.append("scenario","sneakers");
+  fd.append("brand",document.getElementById("brand").value);
+  fd.append("size",document.getElementById("size").value);
+  fd.append("material",document.getElementById("material").value);
+  setStatus("Appraising…");
+  const r=await fetch("/api/appraise",{method:"POST",body:fd});
+  render(await r.json());
+}
+function setStatus(t){document.getElementById("status").textContent=t;}
+
+function render(d){
+  setStatus("");
+  document.getElementById("results").style.display="block";
+  document.getElementById("r-title").textContent=d.title;
+  document.getElementById("r-desc").textContent=d.description;
+  document.getElementById("honesty").textContent="· honesty "+Math.round(d.honesty_score*100)+"%";
+  document.getElementById("r-tags").innerHTML=(d.tags||[]).map(t=>`<span>#${esc(t)}</span>`).join("");
+
+  // price
+  const p=d.price, pe=document.getElementById("r-price");
+  if(p.ok){
+    pe.innerHTML=`<div class="range">${p.low} – ${p.high}</div>
+      <div class="muted">point ${p.point} · ${p.method}</div>
+      <div class="muted" style="margin-top:6px">${esc(p.note)}</div>`;
+  }else{
+    pe.innerHTML=`<div class="abstain">Not enough evidence to price confidently.</div>
+      <div class="muted" style="margin-top:6px">${esc(p.note)}</div>`;
+  }
+
+  // ledger
+  document.getElementById("r-claims").innerHTML=d.claims.map(c=>`
+    <div class="claim">
+      <span class="pill ${PILL[c.status]}">${c.status}</span>
+      <div class="body">
+        <b>${esc(c.attr)}</b>: ${esc(c.value)}
+        <span class="muted">(${Math.round(c.confidence*100)}% · ${esc(c.source)})</span>
+        <div class="reason">${esc(c.reason)}${c.evidence?` — “${esc(c.evidence)}”`:""}</div>
+      </div>
+    </div>`).join("");
+
+  // gate
+  const g=d.publishability, ge=document.getElementById("r-gate");
+  let html=`<div class="gate ${g.ok?'ok':'block'}"><h3>${g.ok?'✅ Ready to review and publish':'⛔ Not publishable yet'}</h3>`;
+  if(g.blockers.length) html+=`<div class="blocker"><b>Must fix:</b><ul>${g.blockers.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div>`;
+  if(g.warnings.length) html+=`<div class="warn"><b>Review:</b><ul>${g.warnings.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></div>`;
+  if(g.requests.length) html+=`<div class="ask"><b>These photos would help:</b><ul>${g.requests.map(r=>`<li>${esc(r.ask)}</li>`).join("")}</ul></div>`;
+  if(d.defects && d.defects.length) html+=`<div class="warn"><b>Visible defects:</b><ul>${d.defects.map(x=>`<li>${esc(x.note)}</li>`).join("")}</ul></div>`;
+  html+=`</div>`;
+  ge.innerHTML=html;
+  document.getElementById("results").scrollIntoView({behavior:"smooth"});
+}
+
+async function loadBench(){
+  const r=await fetch("/api/benchmark"); const d=await r.json();
+  const b=d.baseline,h=d.honest;
+  const rows=[
+    ["Unsupported claims / listing (lower)","unsupported_per_listing",true],
+    ["Correct-abstention rate (higher)","correct_abstention_rate",false],
+    ["Supported attrs retained (higher)","supported_retained_rate",false],
+    ["Human corrections / listing (lower)","corrections_per_listing",true],
+  ];
+  const cell=(key,lowerBetter,val,other)=>{
+    const better = lowerBetter ? val<other : val>other;
+    return `<td class="${better?'better':''}">${val}</td>`;
+  };
+  document.getElementById("bench").innerHTML=`
+    <table>
+      <tr><th>metric</th><th>baseline</th><th>Honest Lister</th></tr>
+      ${rows.map(([lbl,k,low])=>`<tr><td>${lbl}</td>${cell(k,low,b[k],h[k])}${cell(k,low,h[k],b[k])}</tr>`).join("")}
+    </table>
+    <p class="muted" style="margin-top:8px">n = ${d.sample_size} annotated items. ${esc(d.disclaimer)}</p>`;
+}
+</script>
+</body>
+</html>

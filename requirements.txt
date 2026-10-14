@@ -1,0 +1,12 @@
+# Core web app (the demo path needs only these — no model download)
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# --- optional, by backend ---------------------------------------------------
+# Open-weight VLM hosted on a Hugging Face Space (demo):
+#   pip install gradio-client==1.5.4
+# Local open-weight VLM (moondream2 / Qwen2-VL):
+#   pip install "transformers==4.48.0" torch pillow
+# Evidence-backed pricing experiment (non-commercial weights; benchmark only):
+#   pip install tabpfn

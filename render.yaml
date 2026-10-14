@@ -1,0 +1,19 @@
+# Render Blueprint for the Honest Lister demo front end.
+# The web service hosts the UI + API; the open-weight VLM runs on a HF Space
+# (HONEST_LISTER_VLM=hf_space) so this stays within a small instance. For the
+# judge-facing demo we default to the deterministic mock backend so the page
+# never hangs on a cold model start.
+services:
+  - type: web
+    name: honest-lister
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: HONEST_LISTER_VLM
+        value: mock          # switch to hf_space once the Space is verified awake
+      - key: HONEST_LISTER_SPACE
+        sync: false          # e.g. optionalrudra/honest-lister-vlm
+      - key: HF_TOKEN
+        sync: false

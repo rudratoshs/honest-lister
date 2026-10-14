@@ -1,0 +1,38 @@
+category,brand,condition,size,price
+sneakers,,used - good,,42
+sneakers,,used - good,,38
+sneakers,,used - good,,45
+sneakers,,used - good,,40
+sneakers,,used - very good,,55
+sneakers,nike,used - good,,58
+sneakers,nike,used - good,,62
+sneakers,nike,used - very good,,70
+jacket,,used - very good,,48
+jacket,,used - very good,,52
+jacket,,used - good,,39
+jacket,,used - very good,,60
+jacket,,like new,,72
+jacket,,used - good,,41
+dress,zara,like new,m,28
+dress,zara,like new,s,26
+dress,zara,like new,m,30
+dress,zara,used - very good,m,22
+dress,zara,like new,l,29
+dress,,like new,m,18
+handbag,,used - good,,35
+handbag,,used - good,,40
+handbag,,used - very good,,55
+handbag,,used - good,,32
+handbag,,used - very good,,58
+jeans,levi's,used - fair,32,34
+jeans,levi's,used - good,32,45
+jeans,levi's,used - fair,34,32
+jeans,levi's,used - good,30,44
+jeans,levi's,used - very good,32,52
+jeans,,used - fair,32,22
+t-shirt,,used - fair,,8
+t-shirt,,used - fair,,9
+t-shirt,,used - good,,12
+t-shirt,,used - fair,,7
+t-shirt,,used - good,,13
+t-shirt,,used - fair,,10
